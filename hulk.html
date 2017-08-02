@@ -878,15 +878,58 @@ c)
                       var data = event.data;
                         
 //                      pid=100&profileid=100 // 101 101 //video                      
-                        var dataSplited = data.split("="); //pid=1&profileid=1&pname=KC                       
+                        var dataSplited = "pid=0&profileid=0&pname=Ali&page=20&pgender=M".split("="); //pid=1&profileid=1&pname=KC
                         var dataSplited2 = dataSplited[1].split("&"); //pid
                         var dataSplited3 = dataSplited[2].split("&"); //profileID
-                                               
-                        console.log(dataSplited , dataSplited2, dataSplited3, dataSplited[3]);
+                        var dataSplited4 = dataSplited[3].split("&"); //customer name
+                        var dataSplited5 = dataSplited[4].split("&"); //customer age
 
                         var pId = dataSplited2[0]; // pId
                         var profileId = dataSplited3[0]; //profileId
-                        var pName = dataSplited[3];
+                        var pName = dataSplited4[0]; //customer name
+                        var pAge = dataSplited5[0]; //customer age
+                        var pGender = dataSplited[5]; //customer age
+                      
+                        // here is the logic for age and gender, and return pId 
+                        if((pAge < 13 && pGender == 'M') ||  (pAge < 12 && pGender == 'F')){
+                            pId = 1;
+                        }else if(pAge >= 13 && pAge <= 18){
+                            if(pGender == 'M'){
+                                pId = 2;
+                            }else{
+                                pId = 3;
+                            }
+                        }else if(pAge >= 19 && pAge <= 25){
+                            if(pGender == 'M'){
+                                pId = 4;
+                            }else{
+                                pId = 5;
+                            }
+                        }else if(pAge >= 26 && pAge <= 39){
+                            if(pGender == 'M'){
+                                pId = 6;
+                            }else{
+                                pId = 7;
+                            }
+                        }else if(pAge >= 40 && pAge <= 50){
+                            if(pGender == 'M'){
+                                pId = 8;
+                            }else{
+                                pId = 9;
+                            }
+                        }else if(pAge >= 51 && pAge <= 70){
+                            if(pGender == 'M'){
+                                pId = 10;
+                            }else{
+                                pId = 11;
+                            }
+                        }else if(pAge >= 71 && pAge <= 99){
+                            if(pGender == 'M'){
+                                pId = 12;
+                            }else{
+                                pId = 13;
+                            }
+                        }
                       
                                              
                         

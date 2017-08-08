@@ -202,6 +202,7 @@ c)
                 var sidebar = $('.sidebar');
                 var spanWelcome = $('.spanWelcome');
                 var greetingWord = '';
+                var $threeSixty = $('.threesixty');
 
                 // promo 1 - 3 tiles
                 var p1 = {
@@ -1145,7 +1146,7 @@ c)
                 };
                 var json;
 
-                var socket = new WebSocket('ws://192.168.1.71:2000');
+                var socket = new WebSocket('ws://192.168.1.113:2000');
 
 //                        window.onload = function () {
 //                            document.getElementById('button').onclick = function () {
@@ -1192,16 +1193,20 @@ c)
                     var pName = dataSplited3[0]; //customer name
                     var pAge = dataSplited4[0]; //customer age
                     var pGender = dataSplited[4]; //customer gender
-                    var proceedAgeCondition = true;
+                    var proceedAgeCondition = false;
+                    
+                    console.log(pId, pName, pAge, pGender);
 
-                    if (pId == 100 && profileId == 100) {
+                    console.log(typeof(pId));
+
+                    if (pId != 100) {
                         // here is the logic for age and gender, and return pId 
-                        proceedAgeCondition = false;
-                    } else if (pId == 101 && profileId == 101) {
-                        proceedAgeCondition = false;
-                    }
-
-                    if (!proceedAgeCondition) {
+                        proceedAgeCondition = true;
+                    } 
+                    
+                    console.log("proceedAgeCondition", proceedAgeCondition);
+                    
+                    if (proceedAgeCondition) {
 
 //                        var steps = new Promise(
 //                                function (resolve, reject) {
@@ -1251,42 +1256,15 @@ c)
                     }
 
 
-
-
-
-
-                    spanWelcome.html('');
-                    sidebar.html('');
-
-
-                    greetingWord = '';
-                    greetingWord += '<h3>';
-                    // depend what condition
-                    if (pName) {
-                        greetingWord += 'Welcome, ' + pName + '!';
-                    } else {
-                        greetingWord += 'Welcome!';
-                    }
-                    // depend what condition
-
-                    greetingWord += '</h3>';
-
-                    if (width < 1366) {
-                        spanWelcome.append(greetingWord);
-                        $('.spanWelcome').show();
-                        $('.sidebar').hide();
-                    } else {
-                        sidebar.append(greetingWord);
-                        $('.sidebar').show();
-                        $('.spanWelcome').hide();
-                    }
-
-                    if (pId == 100 && profileId == 100) { //sunny day                                                      
+                    greetingMessage(pName);
+                    
+                    console.log("pId", pId);
+                    if (pId == 100) { //sunny day                                                      
                         playMovie(pId);
                         $('#isometric').hide();
                         $('#modal').show();
                         //playMovie();
-                    } else if (pId == 101 && profileId == 101) { //rainy day                              
+                    } else if (pId == 101) { //rainy day                              
                         playMovie(pId);
                         $('#isometric').hide();
                         $('#modal').show();
@@ -1320,12 +1298,25 @@ c)
                     }
                     ;
 
+                    
+                    
+                    scrollerReset();
+                    launchIsometric(json, 2);
+
+
+                    
+
+                };
+
+
+                function scrollerReset(){
                     var scroller = $('.pseudo-scroller');//make page longer                                                                                          
                     scroller.hide('slow', function () {
                         scroller.remove();
                     });
-
-
+                }
+                
+                function launchIsometric(json, version){
                     var ul = $('.grid--effect-flip');
 
                     //stop it dont make it longer
@@ -1371,8 +1362,13 @@ c)
                         liCollection += '<p class="grid__promotion_flag" style="display: none;">' + isValidDate + '</p>';//10
                         // liCollection += '<p class="grid__colour" style="display: none;">'+ item.colour +'</p></li>';        
                     });
-
-                    ul.append(liCollection).hide().show('slow');
+                    
+                    if(version == 2){
+                        ul.append(liCollection).hide().show('slow');    
+                    }else{
+                        ul.append(liCollection);                        
+                    }
+                    
 
 
 
@@ -1433,6 +1429,7 @@ c)
                         count = 16; //limit set of transition images per subject
 
                         // refresh 360 degree image
+                        
                         var q = $threeSixty.reload(path, count);
 
 
@@ -1441,8 +1438,8 @@ c)
                         //itemDetails.html('');
 
                         itemWord += '<h1>' + description + '</h1>';
-                        itemWord += '<span style="font-size: 12px;">' + product_code + '</span>';
-                        itemWord += '<h2>Sku' + sku + '</h2>';
+                        itemWord += '<h2>Code: ' + product_code + '</h2>';
+                        itemWord += '<h2>Sku: ' + sku + '</h2>';
                         if (validDate == "true") {
                             itemWord += '<h2>Promotion Price: ' + promotion_price + '</h2>';
                         }
@@ -1466,11 +1463,35 @@ c)
 
                         //ajax call here
                     });
+                }
+                
+                function greetingMessage(pName){
+                    spanWelcome.html('');
+                    sidebar.html('');
 
-                };
 
+                    greetingWord = '';
+                    greetingWord += '<h3>';
+                    // depend what condition
+                    if (pName) {
+                        greetingWord += 'Welcome, ' + pName + '!';
+                    } else {
+                        greetingWord += 'Welcome!';
+                    }
+                    // depend what condition
 
+                    greetingWord += '</h3>';
 
+                    if (width < 1366) {
+                        spanWelcome.append(greetingWord);
+                        $('.spanWelcome').show();
+                        $('.sidebar').hide();
+                    } else {
+                        sidebar.append(greetingWord);
+                        $('.sidebar').show();
+                        $('.spanWelcome').hide();
+                    }
+                }
 
 
                 var options = {
@@ -1693,74 +1714,7 @@ c)
                 });
 
 
-                greetingWord = '';
-                greetingWord += '<h3>';
-                // depend what condition
-                if (customerName) {
-                    greetingWord += 'Welcome, ' + customerName + '!';
-                } else {
-                    greetingWord += 'Welcome!';
-                }
-                // depend what condition
-
-                greetingWord += '</h3>';
-
-                //greetingWord += '<p>';
-
-                // depend what condition
-                //greetingWord += 'Hi, ';
-
-
-                var customer = {};
-
-                if (profileId == 1) {
-                    customer = {
-                        "customerName": 'Mr Walker'
-                    }
-                } else if (profileId == 2) {
-                    customer = {
-                        "customerName": 'Mr Alan'
-                    }
-                } else if (profileId == 3) {
-                    customer = {
-                        "customerName": 'Ms Avril'
-                    }
-                } else if (profileId == 4) {
-                    customer = {
-                        "customerName": 'Mrs Taylor'
-                    }
-                } else if (profileId == 5) {
-                    customer = {
-                        "customerName": 'Datuk Puah'
-                    }
-                } else {
-                    customer = {
-                        "customerName": 'Lovely'
-                    }
-                }
-
-                //greetingWord += customer.customerName;
-
-
-                //greetingWord += '. This is for you';
-                // depend what condition
-
-                //greetingWord += '</p>';
-                console.log(width);
-
-                if (width < 1366) {
-                    spanWelcome.append(greetingWord);
-                    $('.spanWelcome').show();
-                    $('.sidebar').hide();
-                } else {
-                    console.log("width NOT Fulfilled");
-                    sidebar.append(greetingWord);
-                    $('.sidebar').show();
-                    $('.spanWelcome').hide();
-                }
-
-
-
+                greetingMessage(customerName);
 
                 //check what is the data get from Shield
 
@@ -1785,72 +1739,9 @@ c)
                 }
                 ;
 
-
-                var ul = $('.grid--effect-flip');
-                var liCollection = '';
-
-                var dateFrom = Date.parse(json.promotion.effective_date);
-                var dateTo = Date.parse(json.promotion.exppire_date);
-                var today = new Date(); //today
-                var isValidDate = "false";
-
-
-
-                if (today.getTime() >= dateFrom && today.getTime() <= dateTo) {
-                    isValidDate = "true";
-                }
-
-
-
-                $.each(json.item_list, function (i, item) {
-
-                    liCollection += '<li class="grid__item">';
-                    liCollection += '<a class="grid__link"' + ' id="' + item.product.id + '">';
-                    liCollection += '<img class="grid__img layer" src="' + item.product.sideImage2 + '" />';
-                    liCollection += '<img class="grid__img layer" src="' + item.product.sideImage1 + '" />';
-                    liCollection += '<img class="grid__img layer" id="main" src="' + item.product.mainImage + '" />';
-                    liCollection += '<span class="grid__title">' + item.product.name + '</span>';
-                    liCollection += '<p class="grid__itemname" style="display: none;">' + item.product.description + '</p>';
-                    liCollection += '<p class="grid__oriprice" style="display: none;">' + item.product.selling_price + '</p>';
-                    liCollection += '<p class="grid__promoprice" style="display: none;">' + item.promotion_price + '</p>';
-                    liCollection += '<p class="grid__location" style="display: none;">' + item.product.location + '</p>';
-                    liCollection += '<p class="grid__product_code" style="display: none;">' + item.product.product_code + '</p>';//8
-                    liCollection += '<p class="grid__sku" style="display: none;">' + item.product.sku + '</p>';//9
-                    liCollection += '<p class="grid__promotion_flag" style="display: none;">' + isValidDate + '</p>';//10
-                    // liCollection += '<p class="grid__colour" style="display: none;">'+ item.colour +'</p></li>';        
-                });
-
-                ul.append(liCollection);
-
-                isobind();
-                //put the isometric form into function for isometric binding in videoPlay function
-                function isobind() {
-                    [].slice.call(document.querySelectorAll('.isolayer')).forEach(function (el) {
-                        new IsoGrid(el, {
-                            type: 'scrollable',
-                            transform: 'translateX(-15vw) translateY(275px) rotateX(45deg) rotateZ(45deg)',
-                            stackItemsAnimation: {
-                                properties: function (pos) {
-                                    return {
-                                        translateZ: (pos + 1) * 50,
-                                        rotateZ: getRandomInt(-3, 3)
-                                    };
-                                },
-                                options: function (pos, itemstotal) {
-                                    return {
-                                        type: dynamics.bezier,
-                                        duration: 500,
-                                        points: [{"x": 0, "y": 0, "cp": [{"x": 0.2, "y": 1}]}, {"x": 1, "y": 1, "cp": [{"x": 0.3, "y": 1}]}],
-                                        //delay: (itemstotal-pos-1)*40
-                                    };
-                                }
-                            },
-                            onGridLoaded: function () {
-                                classie.add(document.body, 'grid-loaded');
-                            }
-                        });
-                    });
-                }
+                launchIsometric(json, 1);
+                
+                
 
 
 //			$('#weatherslider').weatherSlider({
@@ -1899,72 +1790,7 @@ c)
                     $('#modal-container').removeAttr('class').addClass(buttonId);
                     $('body').addClass('modal-active');
                 });
-
-
-                var $threeSixty = $('.threesixty');
-
-                $(".grid__link").click(function (data) {
-                    //get ID
-
-                    var filePath = $(this).context.childNodes[2].src; //eg: file:///Users/user/MyWork/iSolutionProjects/IsometricGrids/img/p2/p21.jpg
-                    var n = filePath.lastIndexOf('/'); // get last slash number                                
-                    var fileName = filePath.substring(n + 1); //get the last slash file name                                
-                    var dotIndex = fileName.lastIndexOf('.'); //get fileName without extension number
-                    var frontFileName = fileName.slice(0, dotIndex); //get fileName without extension                                                                 
-
-                    //Get From JSON harcode
-                    console.log("data.currentTarget.childNodes");
-                    console.log(data.currentTarget.childNodes);
-                    var description = data.currentTarget.childNodes[4].innerHTML; //description 
-                    var promotion_price = data.currentTarget.childNodes[6].innerHTML;
-                    var selling_price = data.currentTarget.childNodes[5].innerHTML;
-                    var location = data.currentTarget.childNodes[7].innerHTML;
-                    var product_code = data.currentTarget.childNodes[8].innerHTML;
-                    var sku = data.currentTarget.childNodes[9].innerHTML;
-                    var validDate = data.currentTarget.childNodes[10].innerHTML;
-
-                    var path;
-                    var count;
-                    // get ID for read the series ID and image for 3D
-
-                    path = 'img/360/' + frontFileName + '/' + frontFileName + '{index}.jpg';
-                    count = 16; //limit set of transition images per subject
-
-                    // refresh 360 degree image
-                    var q = $threeSixty.reload(path, count);
-
-
-                    var itemWord = '';
-                    var itemDetails = $('#item-details');
-                    //itemDetails.html('');
-
-                    //itemWord += '<h1>' + description + '<span style="font-size: 12px; margin-top:20px;">' + product_code + '</span></h1>';
-                    itemWord += '<h1>' + description + '</h1>';
-                    itemWord += '<h2>Product Code: ' + product_code + '</h2>';
-                    itemWord += '<h2>Sku: ' + sku + '</h2>';
-                    if (validDate == "true") {
-                        itemWord += '<h2>Promotion Price: ' + promotion_price + '</h2>';
-                    }
-                    itemWord += '<h2>Original Price: ' + selling_price + '</h2>';
-                    itemWord += '<h2>Location: ' + location + '</h2>';
-                    // itemWord += '<h2>Colour: '+ colour +'</h2>';
-                    itemWord += '<div id="closeModal" class="button">OK</div>';
-
-                    itemDetails.empty().prepend(itemWord);
-
-
-                    //apend button will no function, so need define again .click for it
-                    $('#closeModal').click(function () {
-                        $('#modal-container').addClass('out');
-                        $('body').removeClass('modal-active');
-                    })
-
-
-                    $('#modal-container').removeAttr('class').addClass('one');
-                    $('body').addClass('modal-active');
-
-                    //ajax call here
-                });
+               
 
 
                 $('#closeModal').on('click', function () {
@@ -1972,8 +1798,7 @@ c)
                     $('body').removeClass('modal-active');
                 });
 
-                var $threeSixty = $('.threesixty');
-
+                
                 $threeSixty.threeSixty({
                     dragDirection: 'horizontal',
                     useKeys: true,

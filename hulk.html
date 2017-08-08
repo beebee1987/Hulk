@@ -1192,16 +1192,16 @@ c)
                     var pName = dataSplited3[0]; //customer name
                     var pAge = dataSplited4[0]; //customer age
                     var pGender = dataSplited[4]; //customer gender
-                    var proceedAgeCondition = false;
+                    var proceedAgeCondition = true;
 
-                    if (pId != 100 && profileId != 100) {
+                    if (pId == 100 && profileId == 100) {
                         // here is the logic for age and gender, and return pId 
-                        proceedAgeCondition = true;
-                    } else if (pId != 101 && profileId != 101) {
-                        proceedAgeCondition = true;
+                        proceedAgeCondition = false;
+                    } else if (pId == 101 && profileId == 101) {
+                        proceedAgeCondition = false;
                     }
 
-                    if (proceedAgeCondition) {
+                    if (!proceedAgeCondition) {
 
 //                        var steps = new Promise(
 //                                function (resolve, reject) {

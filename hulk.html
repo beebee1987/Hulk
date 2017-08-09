@@ -55,7 +55,7 @@ c)
                         <div class="flex-grid">
                             <div class="col">
                                 <div class="threesixty-wrapper">
-                                    <div class="threesixty" data-path="img/360/p11/p11{index}.jpg" data-count="16">
+                                    <div class="threesixty" data-path="img/360/p11/p11{index}.png" data-count="16">
                                         put your preloader here 
                                         <div class="ui-spinner">
                                             <span class="side side-left">
@@ -191,11 +191,11 @@ c)
         <script>
             (function () {
 
-                playMovie(101);
-                //$('#isometric').show();
-                $('#isometric').hide();
-                //$('#modal').hide();
-                $('#modal').show();
+                //playMovie(101);
+                $('#isometric').show();
+                //$('#isometric').hide();
+                $('#modal').hide();
+                //$('#modal').show();
                 //stopMovie();
 
                 var width = screen.width;
@@ -1362,8 +1362,8 @@ c)
                         var count;
                         // get ID for read the series ID and image for 3D
 
-                        path = 'img/360/' + frontFileName + '/' + frontFileName + '{index}.jpg';
-                        count = 16; //limit set of transition images per subject
+                        path = 'img/360/' + frontFileName + '/' + frontFileName + '{index}.png';
+                        count = 14; //limit set of transition images per subject
 
                         // refresh 360 degree image
 
@@ -1652,7 +1652,7 @@ c)
                 var steps = new Promise(
                         function (resolve, reject) {
                             $.ajax({
-                                url: "http://knexfmw1.knextech.net:8081/ords/harith/restservice/v1.1/promotion_products?pid=1",
+                                url: "http://knexfmw1.knextech.net:8081/ords/harith/restservice/v1.1/promotion_products?pid=6",
                                 type: "GET",
                                 processData: false,
                                 contentType: "application/json",

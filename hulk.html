@@ -191,11 +191,11 @@ c)
         <script>
             (function () {
 
-                //playMovie(101);
-                $('#isometric').show();
-                //$('#isometric').hide();
-                $('#modal').hide();
-                //$('#modal').show();
+                playMovie(101);
+                //$('#isometric').show();
+                $('#isometric').hide();
+                //$('#modal').hide();
+                $('#modal').show();
                 //stopMovie();
 
                 var width = screen.width;
@@ -1194,71 +1194,37 @@ c)
                     var pAge = dataSplited4[0]; //customer age
                     var pGender = dataSplited[4]; //customer gender
                     var proceedAgeCondition = false;
-                    
-                    console.log(pId, pName, pAge, pGender);
-
-                    console.log(typeof(pId));
 
                     if (pId != 100) {
                         // here is the logic for age and gender, and return pId 
                         proceedAgeCondition = true;
-                    } 
-                    
-                    console.log("proceedAgeCondition", proceedAgeCondition);
-                    
-                    if (proceedAgeCondition) {
-
-//                        var steps = new Promise(
-//                                function (resolve, reject) {
-//                                    $.ajax({
-//                                        url: "http://knexfmw1.knextech.net:8081/ords/harith/restservice/v1.1/promotion_products?age=" + pAge + "&gender=" + pGender,
-//                                        type: "GET",
-//                                        processData: false,
-//                                        contentType: "application/json",
-//                                        success: function (result) {
-//
-//                                            resolve(result);
-//                                        },
-//                                        error: function (jqXHR, textStatus, errorThrown) {
-//                                            console.log(jqXHR, textStatus, errorThrown);
-//                                        }
-//                                    });
-//                                });
-//                        steps.then(function (message) {
-//                                
-//                        });
-
-                        if (pAge >= 0 && pAge <= 18) {
-                            if (pGender == 'M') {
-                                pId = 1;
-                            } else {
-                                pId = 2;
-                            }
-                        } else if (pAge >= 19 && pAge <= 30) {
-                            if (pGender == 'M') {
-                                pId = 3;
-                            } else {
-                                pId = 4;
-                            }
-                        } else if (pAge >= 31 && pAge <= 60) {
-                            if (pGender == 'M') {
-                                pId = 5;
-                            } else {
-                                pId = 6;
-                            }
-                        } else if (pAge >= 61 && pAge <= 255) {
-                            if (pGender == 'M') {
-                                pId = 7;
-                            } else {
-                                pId = 8;
-                            }
-                        }
                     }
 
+                    if (proceedAgeCondition) {
+                        var steps = new Promise(
+                                function (resolve, reject) {
+                                    $.ajax({
+                                        url: "http://knexfmw1.knextech.net:8081/ords/harith/restservice/v1.1/promotion_products?age=" + pAge + "&gender=" + pGender,
+                                        type: "GET",
+                                        processData: false,
+                                        contentType: "application/json",
+                                        success: function (result) {
+                                            resolve(result);
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            console.log(jqXHR, textStatus, errorThrown);
+                                        }
+                                    });
+                                });
+                        steps.then(function (message) {
+                            json = message;
+                            scrollerReset();
+                            launchIsometric(json, 2); //2 is mean second time load isometric
+                        });
+                    }
 
                     greetingMessage(pName);
-                    
-                    console.log("pId", pId);
+
                     if (pId == 100) { //sunny day                                                      
                         playMovie(pId);
                         $('#isometric').hide();
@@ -1277,62 +1243,24 @@ c)
                     // if mesage is personalID
                     // if message is 
 
-                    if (pId == 1) {
-                        json = p1;
-                    } else if (pId == 2) {
-                        json = p2;
-                    } else if (pId == 3) {
-                        json = p3;
-                    } else if (pId == 4) {
-                        json = p4;
-                    } else if (pId == 5) {
-                        json = w1;
-                    } else if (pId == 6) {
-                        json = w2;
-                    } else if (pId == 7) {
-                        json = w3;
-                    } else if (pId == 8) {
-                        json = w4;
-                    } else {
-                        json = p1;
-                    }
-                    ;
-
-                    
-                    
-                    scrollerReset();
-                    launchIsometric(json, 2);
-
-
-                    
 
                 };
 
 
-                function scrollerReset(){
+                function scrollerReset() {
                     var scroller = $('.pseudo-scroller');//make page longer                                                                                          
                     scroller.hide('slow', function () {
                         scroller.remove();
                     });
                 }
-                
-                function launchIsometric(json, version){
+
+                function launchIsometric(json, version) {
                     var ul = $('.grid--effect-flip');
 
                     //stop it dont make it longer
                     ul.children().remove();
 
                     var liCollection = '';
-
-
-                    var dateFrom = Date.parse(json.promotion.effective_date);
-                    var dateTo = Date.parse(json.promotion.exppire_date);
-                    var today = new Date(); //today
-                    var isValidDate = "false";
-
-                    if (today.getTime() >= dateFrom && today.getTime() <= dateTo) {
-                        isValidDate = "true";
-                    }
 
 //                    var d1 = dateFrom.split("/");
 //                    var d2 = dateTo.split("/");
@@ -1345,30 +1273,39 @@ c)
 //                    console.log(check > from && check < to)
 
 
-                    $.each(json.item_list, function (i, item) {
+                    $.each(json.items, function (i, item) {
+
+                        var dateFrom = Date.parse(item.effective_date);
+                        var dateTo = Date.parse(item.expire_date);
+                        var today = new Date(); //today
+                        var isValidDate = "false";
+
+                        if (today.getTime() >= dateFrom && today.getTime() <= dateTo) {
+                            isValidDate = "true";
+                        }
 
                         liCollection += '<li class="grid__item">';
-                        liCollection += '<a class="grid__link"' + ' id="' + item.product.id + '">';
-                        liCollection += '<img class="grid__img layer" src="' + item.product.sideImage2 + '" />';
-                        liCollection += '<img class="grid__img layer" src="' + item.product.sideImage1 + '" />';
-                        liCollection += '<img class="grid__img layer" id="main" src="' + item.product.mainImage + '" />';
-                        liCollection += '<span class="grid__title">' + item.product.name + '</span>';
-                        liCollection += '<p class="grid__itemname" style="display: none;">' + item.product.description + '</p>';//4
-                        liCollection += '<p class="grid__oriprice" style="display: none;">RM ' + item.product.selling_price + '</p>';//5
+                        liCollection += '<a class="grid__link"' + ' id="' + item.id + '">';
+                        liCollection += '<img class="grid__img layer" src="' + item.side_image2 + '" />';
+                        liCollection += '<img class="grid__img layer" src="' + item.side_image1 + '" />';
+                        liCollection += '<img class="grid__img layer" id="main" src="' + item.main_image + '" />';
+                        liCollection += '<span class="grid__title">' + item.name + '</span>';
+                        liCollection += '<p class="grid__itemname" style="display: none;">' + item.description + '</p>';//4
+                        liCollection += '<p class="grid__oriprice" style="display: none;">RM ' + item.selling_price + '</p>';//5
                         liCollection += '<p class="grid__promoprice" style="display: none;">RM ' + item.promotion_price + '</p>';//6
-                        liCollection += '<p class="grid__location" style="display: none;">' + item.product.location + '</p>';//7
-                        liCollection += '<p class="grid__product_code" style="display: none;">' + item.product.product_code + '</p>';//8
-                        liCollection += '<p class="grid__sku" style="display: none;">' + item.product.sku + '</p>';//9
+                        liCollection += '<p class="grid__location" style="display: none;">' + item.location + '</p>';//7
+                        liCollection += '<p class="grid__product_code" style="display: none;">' + item.product_code + '</p>';//8
+                        liCollection += '<p class="grid__sku" style="display: none;">' + item.sku + '</p>';//9
                         liCollection += '<p class="grid__promotion_flag" style="display: none;">' + isValidDate + '</p>';//10
-                        // liCollection += '<p class="grid__colour" style="display: none;">'+ item.colour +'</p></li>';        
+                        // liCollection += '<p class="grid__colour" style="display: none;">'+ item.colour +'</p></li>';      
                     });
-                    
-                    if(version == 2){
-                        ul.append(liCollection).hide().show('slow');    
-                    }else{
-                        ul.append(liCollection);                        
+
+                    if (version == 2) {
+                        ul.append(liCollection).hide().show('slow');
+                    } else {
+                        ul.append(liCollection);
                     }
-                    
+
 
 
 
@@ -1429,7 +1366,7 @@ c)
                         count = 16; //limit set of transition images per subject
 
                         // refresh 360 degree image
-                        
+
                         var q = $threeSixty.reload(path, count);
 
 
@@ -1464,8 +1401,8 @@ c)
                         //ajax call here
                     });
                 }
-                
-                function greetingMessage(pName){
+
+                function greetingMessage(pName) {
                     spanWelcome.html('');
                     sidebar.html('');
 
@@ -1502,13 +1439,8 @@ c)
 
                 function success(pos) {
 
-                    console.log("pos");
-                    console.log(pos);
 
                     var crd = pos.coords;
-
-                    console.log("crd");
-                    console.log(crd);
 
                     var googleapi = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + crd.latitude + ',' + crd.longitude;
                     $.ajax({
@@ -1570,19 +1502,19 @@ c)
 
                     var myvid = document.getElementById('myvideo');
                     var myvids;
-
-
+                    
                     if (pId == 100) {
                         myvids = [
-                            "https://dl.dropboxusercontent.com/s/ogxklvyr0uizxa2/Ice-Cream%20-%20Magnum.mp4?dl=0"
+                            "https://dl.dropboxusercontent.com/s/0y7es9t2yvv9vqm/Ice-Cream%20-%20Magnum.mp4?dl=0",
+                            "https://dl.dropboxusercontent.com/s/6v7bkvfyg7ea9gs/Coke.mp4?dl=0"                            
                         ];
-                        myvid.src = "https://dl.dropboxusercontent.com/s/ogxklvyr0uizxa2/Ice-Cream%20-%20Magnum.mp4?dl=0";
+                        myvid.src = "https://dl.dropboxusercontent.com/s/0y7es9t2yvv9vqm/Ice-Cream%20-%20Magnum.mp4?dl=0";
                     } else if (pId == 101) {
                         myvids = [
-                            "https://dl.dropboxusercontent.com/s/i5mw047oi9npnex/Umbrella%20Commercial.mp4?dl=0",
-                            "https://dl.dropboxusercontent.com/s/2yewgre17voaqb4/Hot%20coffee.mp4?dl=0"
+                            "https://dl.dropboxusercontent.com/s/73uwwb37l8a4wfj/Umbrella%20TVC.mp4?dl=0",
+                            "https://dl.dropboxusercontent.com/s/gz0jzi3q3rws1zb/Hot%20coffee.mp4?dl=0"
                         ];
-                        myvid.src = "https://dl.dropboxusercontent.com/s/i5mw047oi9npnex/Umbrella%20Commercial.mp4?dl=0";
+                        myvid.src = "https://dl.dropboxusercontent.com/s/73uwwb37l8a4wfj/Umbrella%20TVC.mp4?dl=0";
                     }
 
                     myvid.play();
@@ -1708,7 +1640,6 @@ c)
                 }
 
 
-
                 $(window).bind('orientationchange', function (event) {
                     width = screen.width;
                 });
@@ -1718,30 +1649,29 @@ c)
 
                 //check what is the data get from Shield
 
-                if (pId == 1) {
-                    json = p1;
-                } else if (pId == 2) {
-                    json = p2;
-                } else if (pId == 3) {
-                    json = p3;
-                } else if (pId == 4) {
-                    json = p4;
-                } else if (pId == 5) {
-                    json = w1;
-                } else if (pId == 6) {
-                    json = w2;
-                } else if (pId == 7) {
-                    json = w3;
-                } else if (pId == 8) {
-                    json = w4;
-                } else {
-                    json = p1;
-                }
-                ;
+                var steps = new Promise(
+                        function (resolve, reject) {
+                            $.ajax({
+                                url: "http://knexfmw1.knextech.net:8081/ords/harith/restservice/v1.1/promotion_products?pid=1",
+                                type: "GET",
+                                processData: false,
+                                contentType: "application/json",
+                                success: function (result) {
+                                    resolve(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(jqXHR, textStatus, errorThrown);
+                                }
+                            });
+                        });
+                steps.then(function (message) {
+                    json = message;
+                    launchIsometric(json, 1); //1 is mean second time load isometric
+                });
 
-                launchIsometric(json, 1);
-                
-                
+
+
+
 
 
 //			$('#weatherslider').weatherSlider({
@@ -1790,7 +1720,7 @@ c)
                     $('#modal-container').removeAttr('class').addClass(buttonId);
                     $('body').addClass('modal-active');
                 });
-               
+
 
 
                 $('#closeModal').on('click', function () {
@@ -1798,7 +1728,7 @@ c)
                     $('body').removeClass('modal-active');
                 });
 
-                
+
                 $threeSixty.threeSixty({
                     dragDirection: 'horizontal',
                     useKeys: true,
